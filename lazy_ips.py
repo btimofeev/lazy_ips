@@ -110,18 +110,18 @@ class LazyIPS:
                 self.error_message("Can't create a backup file!")
                 return
         try:
-            rom = open(romfile, "r+")
+            rom = open(romfile, "rb+")
         except IOError:
             self.error_message("File %s not found!" % romfile)
             return
         ipsfile = self.ips_textEntry.get_text()
         try:
-            patch = open(ipsfile, "r+")
+            patch = open(ipsfile, "rb+")
         except IOError:
             self.error_message("File %s not found!" % ipsfile)
             return
         data = patch.read(5)
-        if data != "PATCH":
+        if data != bytes("PATCH", 'ASCII'):
             self.error_message("IPS file is unknown format.")
             rom.close()
             patch.close()
@@ -135,7 +135,7 @@ class LazyIPS:
             pb_percent = ((patch.tell()*100)/patchsize)
             self.progressbar.set_fraction(pb_percent/100.)
             self.progressbar.set_text(unicode(pb_percent) + "%")
-            if data == "" or data == "EOF":
+            if data == bytes("", 'ASCII') or data == bytes("EOF", 'ASCII'):
                 rom.close()
                 patch.close()
                 self.progressbar.set_text("Done!")
