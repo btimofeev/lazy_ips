@@ -47,6 +47,7 @@ class LazyIPS:
         self.table.attach(self.backupCheckBox, 0, 4, 4, 5)
 
         self.progressbar = Gtk.ProgressBar()
+        self.progressbar.set_show_text(True)
         self.progressbar.set_text("0%")
         self.table.attach(self.progressbar, 0, 4, 5, 6)
 
