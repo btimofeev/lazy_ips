@@ -134,7 +134,7 @@ class LazyIPS:
                 Gtk.main_iteration()
             pb_percent = ((patch.tell()*100)/patchsize)
             self.progressbar.set_fraction(pb_percent/100.)
-            self.progressbar.set_text(unicode(pb_percent) + "%")
+            self.progressbar.set_text("%d%%" % (pb_percent))
             if data == bytes("", 'ASCII') or data == bytes("EOF", 'ASCII'):
                 rom.close()
                 patch.close()
