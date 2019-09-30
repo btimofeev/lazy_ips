@@ -116,7 +116,7 @@ class LazyIPS:
             return
         ipsfile = self.ips_textEntry.get_text()
         try:
-            patch = open(ipsfile, "rb+")
+            patch = open(ipsfile, "rb")
         except IOError:
             self.error_message("File %s not found!" % ipsfile)
             return
