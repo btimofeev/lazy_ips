@@ -105,7 +105,8 @@ class LazyIPS:
         romfile = self.rom_textEntry.get_text()
         if self.backupCheckBox.get_active():
             try:
-                shutil.copyfile(romfile, romfile + ".bak")
+                os.rename(romfile, romfile + ".bak")
+                shutil.copyfile(romfile + ".bak", romfile)
             except:
                 self.error_message("Can't create a backup file!")
                 return
