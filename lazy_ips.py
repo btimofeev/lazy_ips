@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-#Name: lazy_ips.py
-#Version (last modification): 19.02.2012
-#Copyright (c) 2012 Boris Timofeev <mashin87@gmail.com> www.emunix.org
-#License: GNU GPL v3
+# Name: lazy_ips.py
+# Version (last modification): 2019.09.30
+# License: GNU GPL v3
+# Original author: Boris Timofeev https://github.com/btimofeev
+# Port to Python 3: Hubert Figuière https://github.com/hfiguiere
+# Various fixes: https://github.com/hadess
 
 import os, shutil
 import gi
