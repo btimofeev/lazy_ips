@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from patch_ips import read_ips_patch, apply_patch_line
 import argparse
 

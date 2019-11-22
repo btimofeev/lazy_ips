@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 # Name: lazy_ips.py
-# Version (last modification): 2019.09.30
+# Version (last modification): 2019.11.22
 # License: GNU GPL v3
 # Original author: Boris Timofeev https://github.com/btimofeev
 # Port to Python 3: Hubert Figuière https://github.com/hfiguiere
 # Various fixes: https://github.com/hadess
+# Cleanup and CLI: https://github.com/rekentuig
 
 import os, shutil
 import gi
