@@ -12,6 +12,7 @@ import os, shutil
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+import patch_ips
 
 class LazyIPS:
     def __init__(self):
@@ -119,63 +120,30 @@ class LazyIPS:
             return
         ipsfile = self.ips_textEntry.get_text()
         try:
-            patch = open(ipsfile, "rb")
+            patch_file = open(ipsfile, "rb")
         except IOError:
             self.error_message("File %s not found!" % ipsfile)
             return
-        data = patch.read(5)
-        if data != bytes("PATCH", 'ASCII'):
-            self.error_message("IPS file is unknown format.")
-            rom.close()
-            patch.close()
-            return
 
-        patchsize = os.path.getsize(ipsfile)
-        while 1:
-            data = patch.read(3)
-            while Gtk.events_pending():
-                Gtk.main_iteration()
-            pb_percent = ((patch.tell()*100)/patchsize)
-            self.progressbar.set_fraction(pb_percent/100.)
-            self.progressbar.set_text("%d%%" % (pb_percent))
-            if data == bytes("", 'ASCII') or data == bytes("EOF", 'ASCII'):
-                rom.close()
-                patch.close()
-                self.progressbar.set_text("Done!")
-                break
-            try:
-                address = ord(data[0:1])*256*256 + ord(data[1:2])*256 + ord(data[2:3])
-            except:
-                self.error_message("Address error")
-                rom.close()
-                patch.close()
-                break
-            try:
-                rom.seek(address)
-            except:
-                rom.seek(0, 2)
-            data = patch.read(2)
-            try:
-                length = ord(data[0:1])*256 + ord(data[1:2])
-            except:
-                self.error_message("Length error")
-                rom.close()
-                patch.close()
-                break
-            if length:
-                data = patch.read(length)
-                rom.write(data)
-            else: # RLE
-                data = patch.read(2)
-                try:
-                    length = ord(data[0:1]) * 256 + ord(data[1:2])
-                except:
-                    self.error_message("Length error 2")
-                    rom.close()
-                    patch.close()
-                    break
-                byte = patch.read(1)
-                rom.write(byte * length)
+        try:
+            patchsize = os.path.getsize(ipsfile)
+            for patch_line in patch_ips.read_ips_patch(patch_file):
+                
+                while Gtk.events_pending():
+                    Gtk.main_iteration()
+                pb_percent = ((patch_file.tell()*100)/patchsize)
+                self.progressbar.set_fraction(pb_percent/100.)
+                self.progressbar.set_text("%d%%" % (pb_percent))
+
+                patch_ips.apply_patch_line(rom, patch_line)
+                
+            self.progressbar.set_text("Done!")
+
+        except Exception as err:
+            self.error_message(f"Error: {err}")
+        finally:
+            patch_file.close()
+            rom.close()
 
 if __name__ == "__main__":
     app = LazyIPS()
