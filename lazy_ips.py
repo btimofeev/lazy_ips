@@ -14,46 +14,46 @@ class LazyIPS:
         self.window.set_border_width(5)
         self.window.connect("delete_event", self.close_app)
 
-        self.table = Gtk.Table(7, 4, True)
-        self.table.set_row_spacings(2)
-        self.table.set_col_spacings(2)
-        self.window.add(self.table)
+        self.grid = Gtk.Grid()
+        self.grid.set_column_spacing(4)
+        self.grid.set_row_spacing(4)
+        self.grid.set_column_homogeneous(True)
+        self.grid.set_row_homogeneous(True)
+        self.window.add(self.grid)
 
-        self.rom_label = Gtk.Label("Select ROM file:")
-        self.rom_label.set_alignment(0, 0)
-        self.table.attach(self.rom_label, 0, 4, 0, 1)
+        self.rom_label = Gtk.Label(label="Select ROM file:")
+        self.grid.attach(self.rom_label, 0, 0, 1, 1)
 
         self.rom_textEntry = Gtk.Entry()
-        self.rom_openFileButton = Gtk.Button("Open file..", Gtk.STOCK_OPEN)
+        self.rom_openFileButton = Gtk.Button.new_with_label("Open file")
         self.rom_openFileButton.connect("clicked", self.select_rom)
-        self.table.attach(self.rom_textEntry, 0, 3, 1, 2)
-        self.table.attach(self.rom_openFileButton, 3, 4, 1, 2)
+        self.grid.attach(self.rom_textEntry, 0, 1, 3, 1)
+        self.grid.attach(self.rom_openFileButton, 3, 1, 1, 1)
 
-        self.ips_label = Gtk.Label("Select IPS file:")
-        self.ips_label.set_alignment(0, 0)
-        self.table.attach(self.ips_label, 0, 4, 2, 3)
+        self.ips_label = Gtk.Label(label="Select IPS file:")
+        self.grid.attach(self.ips_label, 0, 2, 1, 1)
 
         self.ips_textEntry = Gtk.Entry()
-        self.ips_openFileButton = Gtk.Button("Open file..", Gtk.STOCK_OPEN)
+        self.ips_openFileButton = Gtk.Button.new_with_label("Open file")
         self.ips_openFileButton.connect("clicked", self.select_ips)
-        self.table.attach(self.ips_textEntry, 0, 3, 3, 4)
-        self.table.attach(self.ips_openFileButton, 3, 4, 3, 4)
+        self.grid.attach(self.ips_textEntry, 0, 3, 3, 1)
+        self.grid.attach(self.ips_openFileButton, 3, 3, 1, 1)
 
-        self.backupCheckBox = Gtk.CheckButton("Create a backup file.")
-        self.table.attach(self.backupCheckBox, 0, 4, 4, 5)
+        self.backupCheckBox = Gtk.CheckButton(label="Create a backup file.")
+        self.grid.attach(self.backupCheckBox, 0, 4, 4, 1)
 
         self.progressbar = Gtk.ProgressBar()
         self.progressbar.set_show_text(True)
         self.progressbar.set_text("0%")
-        self.table.attach(self.progressbar, 0, 4, 5, 6)
+        self.grid.attach(self.progressbar, 0, 5, 4, 1)
 
-        self.runButton = Gtk.Button("Execute", Gtk.STOCK_EXECUTE)
+        self.runButton = Gtk.Button.new_with_mnemonic("E_xecute")
         self.runButton.connect("clicked", self.patch_ips)
-        self.exitButton = Gtk.Button("Exit", Gtk.STOCK_QUIT)
+        self.exitButton = Gtk.Button.new_with_mnemonic("_Exit")
         self.exitButton.connect("clicked", self.close_app)
 
-        self.table.attach(self.runButton, 2, 3, 6, 7)
-        self.table.attach(self.exitButton, 3, 4, 6, 7)
+        self.grid.attach(self.runButton, 2, 6, 1, 1)
+        self.grid.attach(self.exitButton, 3, 6, 1, 1)
 
         self.window.show_all()
 
@@ -64,7 +64,8 @@ class LazyIPS:
         Gtk.main_quit()
 
     def select_rom(self, widget):
-        dialog = Gtk.FileChooserDialog("Open ROM", None, Gtk.FileChooserAction.OPEN, (Gtk.STOCK_CANCEL,  Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        dialog = Gtk.FileChooserDialog(title="Open ROM", parent=None, action=Gtk.FileChooserAction.OPEN)
+        dialog.add_buttons(Gtk.STOCK_CANCEL,  Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         filter = Gtk.FileFilter()
         filter.set_name("All files")
         filter.add_pattern("*")
@@ -76,7 +77,8 @@ class LazyIPS:
         dialog.destroy()
 
     def select_ips(self, widget):
-        dialog = Gtk.FileChooserDialog("Open IPS patch", None, Gtk.FileChooserAction.OPEN, (Gtk.STOCK_CANCEL,  Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        dialog = Gtk.FileChooserDialog(title="Open IPS patch", parent=None, action=Gtk.FileChooserAction.OPEN)
+        dialog.add_buttons(Gtk.STOCK_CANCEL,  Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         filter = Gtk.FileFilter()
         filter.set_name("IPS patch (*.ips)")
         filter.add_pattern("*.ips")
@@ -92,7 +94,7 @@ class LazyIPS:
         dialog.destroy()
 
     def error_message(self, message):
-        dialog = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, message)
+        dialog = Gtk.MessageDialog(parent=self.window, flags=0, message_type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.CLOSE, text=message)
         dialog.set_title("Error")
         if dialog.run() == Gtk.ResponseType.CLOSE:
             dialog.destroy()

@@ -3,7 +3,7 @@ IPS patcher for Linux. Gtk3 and CLI user interfaces.
 
 https://github.com/btimofeev/lazy_ips
 
-Version (last modification): 2019.11.22
+Version (last modification): 2019.11.24
 
 lazy_ips
 ========
