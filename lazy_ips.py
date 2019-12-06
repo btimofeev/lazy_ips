@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os, shutil
+import os
+import shutil
+import patch_ips
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-import patch_ips
+
 
 class LazyIPS:
     def __init__(self):
@@ -123,7 +125,7 @@ class LazyIPS:
         try:
             patchsize = os.path.getsize(ipsfile)
             for patch_line in patch_ips.read_ips_patch(patch_file):
-                
+
                 while Gtk.events_pending():
                     Gtk.main_iteration()
                 pb_percent = ((patch_file.tell()*100)/patchsize)
@@ -131,7 +133,7 @@ class LazyIPS:
                 self.progressbar.set_text("%d%%" % (pb_percent))
 
                 patch_ips.apply_patch_line(rom, patch_line)
-                
+
             self.progressbar.set_text("Done!")
 
         except Exception as err:
@@ -139,6 +141,7 @@ class LazyIPS:
         finally:
             patch_file.close()
             rom.close()
+
 
 if __name__ == "__main__":
     app = LazyIPS()

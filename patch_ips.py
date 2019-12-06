@@ -3,6 +3,7 @@ from struct import unpack
 
 PatchLine = namedtuple('PatchLine', ['offset', 'data'])
 
+
 def read_ips_patch_line(file):
     eof_marker = b'EOF'
     offset_size = 3
@@ -14,14 +15,14 @@ def read_ips_patch_line(file):
         if offset_raw == eof_marker:
             return None
         offset = unpack('>l', b'\x00' + offset_raw)[0]
-    
+
     except:
         raise IOError("error reading offset")
 
     try:
         data_len_raw = file.read(data_len_size)
         data_len = unpack('>h', data_len_raw)[0]
-        
+
         if data_len > 0:
             data = file.read(data_len)
             return PatchLine(offset, data)
@@ -35,6 +36,7 @@ def read_ips_patch_line(file):
 
     except:
         raise IOError("error reading data")
+
 
 def read_ips_patch(file):
     patch_marker = b'PATCH'
@@ -51,6 +53,7 @@ def read_ips_patch(file):
             yield data
         else:
             eof = True
+
 
 def apply_patch_line(image, patch_line):
     try:
