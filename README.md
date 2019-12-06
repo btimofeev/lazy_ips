@@ -8,7 +8,7 @@ Version (last modification): 2019.11.24
 lazy_ips
 ========
 
-<img src="/img/screenshot.png">
+<img src="https://github.com/btimofeev/lazy_ips/raw/master/img/screenshot.png">
 
 Dependencies: Python3 and PyGObject
 
