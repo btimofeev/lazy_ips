@@ -3,21 +3,19 @@ IPS patcher for Linux. Gtk3 and CLI user interfaces.
 
 https://github.com/btimofeev/lazy_ips
 
-Version (last modification): 2019.11.24
-
-lazy_ips
+lazy-ips
 ========
 
 <img src="https://github.com/btimofeev/lazy_ips/raw/master/img/screenshot.png">
 
 Dependencies: Python3 and PyGObject
 
-lazy_ips_cli
+lazy-ips-cli
 ============
 
-Command-line interface for IPS patching. Does not require PyGObject.
+Command-line interface for IPS patching. Does not require PyGObject. Works on Windows, MacOS and Android (via Termux).
 
-Usage: ```lazy_ips_cli image_file patch_file```
+Usage: ```lazy-ips-cli image_file patch_file```
 
 Authors
 -------

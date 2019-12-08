@@ -1,7 +1,7 @@
 import unittest
 import binascii
 import os
-import patch_ips
+from lazy_ips.patch import ips
 from shutil import copyfile
 
 in_file = "./tests/src.bin"
@@ -27,8 +27,8 @@ class TestPatchIPS(unittest.TestCase):
 
     def test_apply_patch(self):
         with open(out_file, 'rb+') as out, open(patch_file, 'rb') as patch:
-            for patch_line in patch_ips.read_ips_patch(patch):
-                patch_ips.apply_patch_line(out, patch_line)
+            for patch_line in ips.read_patch(patch):
+                ips.apply_patch_line(out, patch_line)
 
         self.assertEqual(crc(out_file), out_crc)
 

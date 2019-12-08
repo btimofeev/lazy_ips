@@ -4,7 +4,7 @@ from struct import unpack
 PatchLine = namedtuple('PatchLine', ['offset', 'data'])
 
 
-def read_ips_patch_line(file):
+def read_patch_line(file):
     eof_marker = b'EOF'
     offset_size = 3
     data_len_size = 2
@@ -38,7 +38,7 @@ def read_ips_patch_line(file):
         raise IOError("error reading data")
 
 
-def read_ips_patch(file):
+def read_patch(file):
     patch_marker = b'PATCH'
 
     # Check marker.
@@ -48,7 +48,7 @@ def read_ips_patch(file):
 
     eof = False
     while not eof:
-        data = read_ips_patch_line(file)
+        data = read_patch_line(file)
         if data:
             yield data
         else:
