@@ -16,7 +16,7 @@ def read_patch_line(file):
             return None
         offset = unpack('>l', b'\x00' + offset_raw)[0]
 
-    except:
+    except Exception:
         raise IOError("error reading offset")
 
     try:
@@ -34,7 +34,7 @@ def read_patch_line(file):
         data = rle_byte * rle_len
         return PatchLine(offset, data)
 
-    except:
+    except Exception:
         raise IOError("error reading data")
 
 
@@ -58,6 +58,6 @@ def read_patch(file):
 def apply_patch_line(image, patch_line):
     try:
         image.seek(patch_line.offset)
-    except:
+    except Exception:
         image.seek(0, 2)
     image.write(patch_line.data)

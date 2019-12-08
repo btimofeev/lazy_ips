@@ -66,8 +66,11 @@ class LazyIPS:
         Gtk.main_quit()
 
     def select_rom(self, widget):
-        dialog = Gtk.FileChooserDialog(title="Open ROM", parent=None, action=Gtk.FileChooserAction.OPEN)
-        dialog.add_buttons(Gtk.STOCK_CANCEL,  Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+        dialog = Gtk.FileChooserDialog(title="Open ROM",
+                                       parent=None,
+                                       action=Gtk.FileChooserAction.OPEN)
+        dialog.add_buttons(Gtk.STOCK_CANCEL,  Gtk.ResponseType.CANCEL,
+                           Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         filter = Gtk.FileFilter()
         filter.set_name("All files")
         filter.add_pattern("*")
@@ -79,8 +82,11 @@ class LazyIPS:
         dialog.destroy()
 
     def select_ips(self, widget):
-        dialog = Gtk.FileChooserDialog(title="Open IPS patch", parent=None, action=Gtk.FileChooserAction.OPEN)
-        dialog.add_buttons(Gtk.STOCK_CANCEL,  Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+        dialog = Gtk.FileChooserDialog(title="Open IPS patch",
+                                       parent=None,
+                                       action=Gtk.FileChooserAction.OPEN)
+        dialog.add_buttons(Gtk.STOCK_CANCEL,  Gtk.ResponseType.CANCEL,
+                           Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         filter = Gtk.FileFilter()
         filter.set_name("IPS patch (*.ips)")
         filter.add_pattern("*.ips")
@@ -96,51 +102,43 @@ class LazyIPS:
         dialog.destroy()
 
     def error_message(self, message):
-        dialog = Gtk.MessageDialog(parent=self.window, flags=0, message_type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.CLOSE, text=message)
+        dialog = Gtk.MessageDialog(parent=self.window,
+                                   flags=0,
+                                   message_type=Gtk.MessageType.ERROR,
+                                   buttons=Gtk.ButtonsType.CLOSE,
+                                   text=message)
         dialog.set_title("Error")
         if dialog.run() == Gtk.ResponseType.CLOSE:
             dialog.destroy()
 
+    def update_progress(self, percent):
+        self.progressbar.set_fraction(percent/100.)
+        self.progressbar.set_text("%d%%" % (percent))
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+
     def patch_ips(self, widget):
         romfile = self.rom_textEntry.get_text()
+        ipsfile = self.ips_textEntry.get_text()
+
         if self.backupCheckBox.get_active():
             try:
                 os.rename(romfile, romfile + ".bak")
                 shutil.copyfile(romfile + ".bak", romfile)
-            except:
+            except Exception:
                 self.error_message("Can't create a backup file!")
                 return
-        try:
-            rom = open(romfile, "rb+")
-        except IOError:
-            self.error_message("File %s not found!" % romfile)
-            return
-        ipsfile = self.ips_textEntry.get_text()
-        try:
-            patch_file = open(ipsfile, "rb")
-        except IOError:
-            self.error_message("File %s not found!" % ipsfile)
-            return
 
         try:
-            patchsize = os.path.getsize(ipsfile)
-            for patch_line in ips.read_patch(patch_file):
+            with open(romfile, "rb+") as rom, open(ipsfile, "rb") as patch:
+                patchsize = os.path.getsize(ipsfile)
+                for patch_line in ips.read_patch(patch):
+                    ips.apply_patch_line(rom, patch_line)
+                    self.update_progress((patch.tell() * 100) / patchsize)
 
-                while Gtk.events_pending():
-                    Gtk.main_iteration()
-                pb_percent = ((patch_file.tell()*100)/patchsize)
-                self.progressbar.set_fraction(pb_percent/100.)
-                self.progressbar.set_text("%d%%" % (pb_percent))
-
-                ips.apply_patch_line(rom, patch_line)
-
-            self.progressbar.set_text("Done!")
-
+                self.progressbar.set_text("Done!")
         except Exception as err:
             self.error_message(f"Error: {err}")
-        finally:
-            patch_file.close()
-            rom.close()
 
 
 def main():
