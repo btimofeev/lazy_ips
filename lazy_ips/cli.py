@@ -14,20 +14,20 @@ def main():
     try:
         image = open(args.image_file, 'rb+')
     except Exception as err:
-        print(f"Error opening {args.image_file}: {err}")
+        print("Error opening {}: {}".format(args.image_file, err))
         exit()
 
     try:
         patch = open(args.patch_file, 'rb')
     except Exception as err:
-        print(f"Error opening {args.patch_file}: {err}")
+        print("Error opening {}: {}".format(args.patch_file, err)) 
         exit()
 
     try:
         for patch_line in ips.read_patch(patch):
             ips.apply_patch_line(image, patch_line)
     except Exception as err:
-        print(f"Error patching {args.image_file}: {err}")
+        print("Error patching {}: {}".format(args.image_file, err))
     finally:
         patch.close()
         image.close()

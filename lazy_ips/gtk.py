@@ -138,7 +138,7 @@ class LazyIPS:
 
                 self.progressbar.set_text("Done!")
         except Exception as err:
-            self.error_message(f"Error: {err}")
+            self.error_message("Error: {}".format(err))
 
 
 def main():
