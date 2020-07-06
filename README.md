@@ -16,6 +16,15 @@ Command-line interface for IPS patching. Does not require PyGObject. Works on Li
 
 Usage: ```lazy-ips-cli image_file patch_file```
 
+Installation
+------------
+
+This step requires the `setuptools` installed on the system.
+
+`python3 setup.py install`
+
+This command will automatically create the necessary scripts in /usr/bin
+
 Authors
 -------
 
